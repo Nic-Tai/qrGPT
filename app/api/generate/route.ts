@@ -6,6 +6,10 @@ import QRCode from 'qrcode';
 import sharp from 'sharp';
 import { ImageResponse } from '@/utils/types';
 
+// New way to configure the API route
+export const runtime = 'edge'; // 'nodejs' (default) | 'edge'
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -81,9 +85,3 @@ export async function POST(request: NextRequest) {
     return new Response('Error processing image', { status: 500 });
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
