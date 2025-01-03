@@ -16,6 +16,11 @@ export async function POST(request: NextRequest) {
       return new Response('URL and image are required', { status: 400 });
     }
 
+    // Validate file size (200KB)
+    if (image.size > 200 * 1024) {
+      return new Response('Image size must be less than 200KB', { status: 400 });
+    }
+
     const id = nanoid();
     const startTime = performance.now();
 

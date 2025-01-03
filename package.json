@@ -42,7 +42,8 @@
     "zod": "^3.22.2",
     "qrcode": "^1.5.5",
     "sharp": "^0.33.5",
-    "@upstash/redis": "^1.28.3"
+    "@upstash/redis": "^1.28.3",
+    "react-image-crop": "^11.0.5"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",

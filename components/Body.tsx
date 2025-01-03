@@ -23,6 +23,7 @@ import downloadQrCode from '@/utils/downloadQrCode';
 import { useRouter } from 'next/navigation';
 import { toast, Toaster } from 'react-hot-toast';
 import { ImageResponse } from '@/utils/types';
+import ImageCropper from './ImageCropper';
 
 const generateFormSchema = z.object({
   url: z.string().min(1),
@@ -46,6 +47,8 @@ const Body = ({
   const [error, setError] = useState<Error | null>(null);
   const [response, setResponse] = useState<ImageResponse | null>(null);
   const [submittedURL, setSubmittedURL] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const router = useRouter();
 
@@ -108,6 +111,25 @@ const Body = ({
     [router],
   );
 
+  const handleFileSelect = (file: File) => {
+    if (file.size > 200 * 1024) {
+      setError(new Error('Image size must be less than 200KB'));
+      return;
+    }
+
+    setSelectedFile(file);
+    setShowCropper(true);
+  };
+
+  const handleCropComplete = (croppedBlob: Blob) => {
+    const file = new File([croppedBlob], selectedFile?.name || 'cropped.jpg', {
+      type: 'image/jpeg',
+    });
+    form.setValue('image', file);
+    setShowCropper(false);
+    setSelectedFile(null);
+  };
+
   return (
     <div className="flex justify-center items-center flex-col w-full lg:p-0 p-4 sm:mb-28 mb-0">
       <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 mt-10">
@@ -145,14 +167,14 @@ const Body = ({
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              onChange(file);
+                              handleFileSelect(file);
                             }
                           }}
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        Upload a square image to merge with your QR code.
+                        Upload a square image (max 200KB) to merge with your QR code.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -227,6 +249,16 @@ const Body = ({
           )}
         </div>
       </div>
+      {showCropper && selectedFile && (
+        <ImageCropper
+          imageFile={selectedFile}
+          onCropComplete={handleCropComplete}
+          onCancel={() => {
+            setShowCropper(false);
+            setSelectedFile(null);
+          }}
+        />
+      )}
       <Toaster />
     </div>
   );
