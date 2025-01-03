@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     // Generate QR Code as PNG buffer
     const qrBuffer = await QRCode.toBuffer(url, {
-      errorCorrectionLevel: 'H', // Highest error correction for better image overlay
+      errorCorrectionLevel: 'H',
       margin: 1,
       width: 1000,
     });
@@ -44,13 +44,18 @@ export async function POST(request: NextRequest) {
       .resize(1000, 1000, { fit: 'cover' })
       .toBuffer();
 
+    // Create a semi-transparent QR code by adjusting its alpha channel
+    const qrWithAlpha = await sharp(qrBuffer)
+      .ensureAlpha()
+      .linear(1, -0.1) // Adjust transparency
+      .toBuffer();
+
     // Merge QR code with uploaded image
     const mergedImage = await sharp(resizedImage)
       .composite([
         {
-          input: qrBuffer,
-          blend: 'multiply', // This blend mode helps maintain QR code readability
-          opacity: 0.9,
+          input: qrWithAlpha,
+          blend: 'multiply',
         },
       ])
       .png()
