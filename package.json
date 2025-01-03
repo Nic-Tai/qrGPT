@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "postinstall": "npm install --platform=linux --arch=x64 sharp"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
@@ -38,7 +39,7 @@
     "react-hot-toast": "^2.4.1",
     "react-image-crop": "^11.0.5",
     "replicate": "^0.18.0",
-    "sharp": "^0.33.5",
+    "sharp": "^0.32.6",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
