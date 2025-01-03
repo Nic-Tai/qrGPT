@@ -8,3 +8,9 @@ export type QrCodeControlNetRequest = {
 };
 
 export type QrCodeControlNetResponse = [string];
+
+export type ImageResponse = {
+  image_url: string;
+  model_latency_ms: number;
+  id: string;
+};
